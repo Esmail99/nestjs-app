@@ -5,31 +5,33 @@ import { UsersService } from './users.service';
 
 describe('AuthService', () => {
   let authService: AuthService;
-  const usersService: Partial<UsersService> = {};
+  let usersService: Partial<UsersService>;
 
   beforeEach(async () => {
     const users: User[] = [];
 
-    usersService.findOneByEmail = (email: string) => {
-      const user = users.find((user) => user.email === email);
+    usersService = {
+      findOneByEmail: (email: string) => {
+        const user = users.find((user) => user.email === email);
 
-      if (!user) {
-        return Promise.resolve(null);
-      }
+        if (!user) {
+          return Promise.resolve(null);
+        }
 
-      return Promise.resolve(user);
-    };
+        return Promise.resolve(user);
+      },
 
-    usersService.create = ({ email, password }) => {
-      const user = {
-        id: Math.floor(Math.random() * 9999),
-        email,
-        password,
-      } as User;
+      create: ({ email, password }) => {
+        const user = {
+          id: Math.floor(Math.random() * 9999),
+          email,
+          password,
+        } as User;
 
-      users.push(user);
+        users.push(user);
 
-      return Promise.resolve(user);
+        return Promise.resolve(user);
+      },
     };
 
     const module = await Test.createTestingModule({

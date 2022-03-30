@@ -9,11 +9,15 @@ import {
   Post,
   Put,
   Session,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { AuthService } from './auth.service';
+import { CurrentUser } from './decorators/current-user.decorator';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { User } from './user.entity';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -25,10 +29,9 @@ export class UsersController {
   ) {}
 
   @Get('/current-user')
-  async getCurrentUser(@Session() session: any) {
-    const user = await this.usersService.findOne(session.userId);
-
-    return user;
+  @UseGuards(AuthGuard)
+  async getCurrentUser(@CurrentUser() currentUser: User) {
+    return currentUser;
   }
 
   @Post('/register')

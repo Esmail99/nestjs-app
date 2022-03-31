@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   NotFoundException,
   Param,
   Post,
@@ -44,6 +45,7 @@ export class UsersController {
   }
 
   @Post('/login')
+  @HttpCode(200)
   async loginUser(@Body() body: CreateUserDto, @Session() session: any) {
     const user = await this.authService.login(body);
 

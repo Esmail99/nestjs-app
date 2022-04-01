@@ -18,11 +18,11 @@ describe('Reports routes', () => {
 
     const email = 'kaka@test.com';
 
-    const res = await request(app.getHttpServer())
+    const createUserResponse = await request(app.getHttpServer())
       .post('/users/register')
       .send({ email, password: '123' });
 
-    cookie = res.get('Set-Cookie');
+    cookie = createUserResponse.get('Set-Cookie');
   });
 
   describe('create report', () => {
@@ -51,6 +51,8 @@ describe('Reports routes', () => {
         .expect(201)
         .then((res) => {
           expect(res.body.id).toBeDefined();
+          expect(res.body.userId).toBe(1);
+          expect(res.body.user).toBeUndefined();
           expect(typeof res.body.id).toBe('number');
           expect(res.body.price).toBe(reportDto.price);
           expect(res.body.longitude).toBe(reportDto.longitude);

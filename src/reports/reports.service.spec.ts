@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { ReportDto } from './dtos/report.dto';
 import { Report } from './report.entity';
@@ -52,10 +53,19 @@ describe('ReportsService', () => {
         mileage: 50,
       };
 
-      const report = await reportsService.create(reportDto);
+      const user = {
+        id: 1,
+        email: 'baba@baba.com',
+        password:
+          '28005cfdf3ec2cde.81d84b888cc093f02350c92d8f618723027bc59b44d62b1cc8386ca46c2223a5',
+      } as User;
+
+      const report = await reportsService.create(reportDto, user);
 
       expect(report.id).toBeDefined();
       expect(report.price).toBe(reportDto.price);
+      expect(report.user.id).toBe(user.id);
+      expect(report.user.email).toBe(user.email);
     });
   });
 });

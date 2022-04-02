@@ -1,9 +1,17 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ReportDto } from './dtos/report.dto';
 import { ReportsService } from './reports.service';
 import { AuthGuard } from '../guards/auth.guard';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
 import { User } from '../users/user.entity';
+import { ApproveReportDto } from './dtos/approve-report.dto';
 
 @Controller('reports')
 export class ReportsController {
@@ -25,5 +33,20 @@ export class ReportsController {
     delete reportToBeReturned.user;
 
     return reportToBeReturned;
+  }
+
+  @Patch('/:reportId')
+  @UseGuards(AuthGuard)
+  async approveReport(
+    @Param('reportId') reportId: string,
+    @Body() body: ApproveReportDto,
+  ) {
+    console.log(body);
+    const report = await this.reportsService.approve(
+      parseInt(reportId),
+      body.isApproved,
+    );
+
+    return report;
   }
 }

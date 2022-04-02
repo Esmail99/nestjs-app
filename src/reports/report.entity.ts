@@ -1,5 +1,6 @@
 import { User } from '../users/user.entity';
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { DefaultValuePipe, Optional } from '@nestjs/common';
 
 @Entity()
 export class Report {
@@ -26,6 +27,9 @@ export class Report {
 
   @Column()
   mileage: number;
+
+  @Column({ default: false })
+  isApproved: boolean;
 
   @ManyToMany(() => User, (user) => user.reports)
   user: User;

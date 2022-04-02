@@ -12,17 +12,26 @@ type MockType<T> = {
 
 describe('ReportsService', () => {
   let reportsService: ReportsService;
+  let repositoryMockFactory: () => MockType<Repository<any>>;
 
   beforeEach(async () => {
-    const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
-      () => ({
-        create: jest.fn((entity) => entity),
-        save: jest.fn((entity) => ({
-          ...entity,
-          id: Math.floor(Math.random() * 999),
-        })),
-      }),
-    );
+    repositoryMockFactory = jest.fn(() => ({
+      create: jest.fn((entity) => entity),
+      save: jest.fn((entity) => ({
+        ...entity,
+        id: entity.id || Math.floor(Math.random() * 999),
+      })),
+      findOneBy: jest.fn(({ id }) => ({
+        id,
+        price: 50,
+        make: 'BMW',
+        model: 'X3',
+        year: 2010,
+        latitude: 30.3424,
+        longitude: 30.123123,
+        mileage: 50,
+      })),
+    }));
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -66,6 +75,17 @@ describe('ReportsService', () => {
       expect(report.price).toBe(reportDto.price);
       expect(report.user.id).toBe(user.id);
       expect(report.user.email).toBe(user.email);
+    });
+  });
+
+  describe('approve report', () => {
+    it('should be approved', async () => {
+      const reportId = 1;
+      const isApproved = false;
+      const report = await reportsService.approve(reportId, isApproved);
+
+      expect(report.id).toBe(reportId);
+      expect(report.isApproved).toBe(isApproved);
     });
   });
 });

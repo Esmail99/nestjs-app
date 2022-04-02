@@ -12,6 +12,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
 import { User } from '../users/user.entity';
 import { ApproveReportDto } from './dtos/approve-report.dto';
+import { AdminGuard } from '../guards/admin.guard';
 
 @Controller('reports')
 export class ReportsController {
@@ -36,7 +37,7 @@ export class ReportsController {
   }
 
   @Patch('/:reportId')
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminGuard)
   async approveReport(
     @Param('reportId') reportId: string,
     @Body() body: ApproveReportDto,

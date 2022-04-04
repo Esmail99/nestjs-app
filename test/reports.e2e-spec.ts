@@ -86,14 +86,6 @@ describe('Reports routes', () => {
       mileage: 50,
     };
 
-    it('should fail due to admin authorization', async () => {
-      return request(app.getHttpServer())
-        .patch(`/reports/1`)
-        .set('Cookie', cookie)
-        .send({ isApproved: 'sad' })
-        .expect(403);
-    });
-
     it('should approve report', async () => {
       const { body: report } = await request(app.getHttpServer())
         .post('/reports/create')
